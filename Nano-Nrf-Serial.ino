@@ -48,20 +48,23 @@ void loop()
     if (Serial.available())
     {
         incomingValue = Serial.read();
-
+        Serial.print(incomingValue);
+        Serial.println();
         // Do all the processing here since this is the end of a line
         if (incomingValue == "TONRFSTART" || readStart)
         {
-            if (i == 0 && readStart)
-            {
-                employeeRFID = incomingValue;
-                i++;
-            }
             if (i == 1 && readStart)
             {
                 rfid = incomingValue;
                 i++;
             }
+
+            if (i == 0 && readStart)
+            {
+                employeeRFID = incomingValue;
+                i++;
+            }
+
             readStart = true;
         }
 
