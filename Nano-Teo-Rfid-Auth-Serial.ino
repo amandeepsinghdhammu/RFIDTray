@@ -159,7 +159,7 @@ void loop()
         if (arrayIndex != -1)
         {
             // Found
-            Serial.println(readRFID + "==" + employeeArray[arrayIndex]);
+            Serial.println(readRFID + "==" + arrayIndex);
             Serial.println("Auth true");
             auth = true;
             ledOnOff("authorize");
@@ -172,7 +172,7 @@ void loop()
             if (auth)
             {
                 authStartTime = millis();
-                sendDataToNrf(readRFID, employeeArray[arrayIndex]);
+                sendDataToNrf(readRFID, arrayIndex);
             }
         }
     }
