@@ -7,7 +7,6 @@
 
 /**
    MFRC522 configuration for Two RFID readers
-
    Typical pin layout used:
    ----------------------------------------------------------
                MFRC522      Arduino       Arduino   Arduino  
@@ -35,9 +34,10 @@ bool _tag_found = false;
 // Auth configuration
 String EmployeeRFIDCode = "117880691"; //"289708846"; //"3802552960"; //3779262765
 
-int employeeArrayCount = 4;
+const byte employeeArrayCount = 4;
 String employeeArray[employeeArrayCount] = {"117880691", "289708846", "3802552960", "3779262765"};
-int arrayIndex;
+
+String arrayIndex;
 
 bool auth = false;
 unsigned long lockTime = 10000;  // 10 sec
@@ -156,7 +156,7 @@ void loop()
 
         // Check if RFID exist in employee array
         arrayIndex = findIndexInArray(employeeArray, employeeArrayCount, readRFID);
-        if (arrayIndex != -1)
+        if (arrayIndex != "-1")
         {
             // Found
             Serial.println(readRFID + "==" + arrayIndex);
@@ -191,7 +191,7 @@ void loop()
         if (auth)
         {
             authStartTime = millis();
-            sendDataToNrf("stop");
+            //sendDataToNrf("stop");
         }
     }
 }
@@ -246,7 +246,7 @@ String dump_byte_array(byte *buffer, byte bufferSize)
 }
 
 // To find an element in an array(https://phanderson.com/C/find_idx.html)
-int findIndexInArray(String a[], int num_elements, String value)
+String findIndexInArray(String a[], int num_elements, String value)
 {
     int i;
     for (i = 0; i < num_elements; i++)
