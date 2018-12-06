@@ -62,12 +62,12 @@ runProgram = True;
 
 try:
     while runProgram:
-        print(radio.available(0))
+        #print(radio.available(0))
         while not radio.available(0):
             time.sleep(1 / 100)
         receivedMessage = []
         radio.read(receivedMessage, radio.getDynamicPayloadSize())
-        print("Received: {}".format(receivedMessage))
+        #print("Received: {}".format(receivedMessage))
 
         #print("Translating the receivedMessage into unicode characters")
         string = ""
@@ -76,7 +76,7 @@ try:
             # Decode into standard unicode set
             if (n >= 32 and n <= 126):
                 string += chr(n)
-        print("Out received message decodes to: {}".format(string))
+        #print("Out received message decodes to: {}".format(string))
         
         radio.stopListening()
         radio.startListening()
