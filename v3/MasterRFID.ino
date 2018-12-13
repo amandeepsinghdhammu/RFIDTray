@@ -188,7 +188,7 @@ void loop(){
       if(readRFID2 == "") {
         ledOnOff("block", currentReadingReader2);
       } else {
-        stop2 = readRFID1;
+        stop2 = readRFID2;
       }
       sendDataToNrf(stop1, stop2);
   }
@@ -219,11 +219,11 @@ void ledOnOff(String status, int reader){
   } else if (status == "reading"){ //reading tag    
     if(reader == 1){
       digitalWrite(BlueLED1, HIGH);
-      digitalWrite(BlueLED2, LOW);
+      //digitalWrite(BlueLED2, LOW);
     }
     if(reader == 2){
       digitalWrite(BlueLED2, HIGH);
-       digitalWrite(BlueLED1, LOW);
+       //digitalWrite(BlueLED1, LOW);
     }        
     digitalWrite(GreenLED, LOW);
     digitalWrite(RedLED, LOW);
