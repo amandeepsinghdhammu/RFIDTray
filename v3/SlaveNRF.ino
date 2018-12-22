@@ -44,10 +44,12 @@ void setup() {
 }
 
 void loop () {
-  delay(100);
+  
   lipoV = analogRead(lipo);
+  float voltage = lipoV * (3.7 / 1023.00) * 2;
   Serial.println(lipoV);
-  if(lipoV<650){
+  Serial.println(voltage);
+  if(lipoV<800){
   digitalWrite(red,HIGH);
   digitalWrite(blue,LOW);
   digitalWrite(green,LOW);
@@ -62,6 +64,7 @@ void loop () {
     digitalWrite(blue,LOW);
     digitalWrite(green,HIGH);
   }
+  delay(10000);
 }
 void receiveEvent(int howMany)
 {
