@@ -5,21 +5,8 @@
 #include <printf.h>
 RF24 radio(9, 10);
 
-#define red   5
-#define blue 4
-#define green 3
-#define lipo  A0
 
-
-float lipoV = 0;
-void setup() {
-
-  pinMode(red,OUTPUT);
-  pinMode(blue,OUTPUT);
-  pinMode(green,OUTPUT);
-  pinMode(lipo,INPUT);
-
-  
+void setup() {  
   Wire.begin(8); // join i2c bus with address #4
   SPI.begin(); // Init SPI bus
   Wire.onReceive(receiveEvent); // register event
@@ -43,28 +30,8 @@ void setup() {
 
 }
 
-void loop () {
-  
-  lipoV = analogRead(lipo);
-  float voltage = lipoV * (3.7 / 1023.00) * 2;
-  Serial.println(lipoV);
-  Serial.println(voltage);
-  if(lipoV<800){
-  digitalWrite(red,HIGH);
-  digitalWrite(blue,LOW);
-  digitalWrite(green,LOW);
-  }
-  if(lipoV>800 && lipoV<950){
-    digitalWrite(red,LOW);
-    digitalWrite(blue,HIGH);
-    digitalWrite(green,LOW);
-  }
-  if(lipoV>950){
-    digitalWrite(red,LOW);
-    digitalWrite(blue,LOW);
-    digitalWrite(green,HIGH);
-  }
-  delay(10000);
+void loop () { 
+  delay(100);
 }
 void receiveEvent(int howMany)
 {
