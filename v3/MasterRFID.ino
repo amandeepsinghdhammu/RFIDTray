@@ -27,10 +27,10 @@ const byte resetPin = 8;
 MFRC522 mfrc522[numReaders]; // Initialization
 
 // Global variables to store values for RFID readers for the program
-bool rfid_tag_present_prev = false;
+String rfid_tag_present_prev = "";
 bool rfid_tag_present = false;
 
-bool rfid_tag_present_prev2 = false;
+String rfid_tag_present_prev2 = "";
 bool rfid_tag_present2 = false;
 
 int _rfid_error_counter = 0;
@@ -38,6 +38,9 @@ bool _tag_found = false;
 
 int currentReadingReader1 = 0;
 int currentReadingReader2 = 0;
+
+int reader1Counter = 0;
+int reader2Counter = 0;
 
 //LED signals for different for reading RFID process
 int blueLed1 = 6;  // Card scanning
@@ -86,8 +89,8 @@ void setup(){
 
 void loop(){
   
-  rfid_tag_present_prev = rfid_tag_present;
-  rfid_tag_present_prev2 = rfid_tag_present2;
+  //rfid_tag_present_prev = readRFID1;
+  //rfid_tag_present_prev2 = readRFID2;
 
   _rfid_error_counter += 1;
   if (_rfid_error_counter > 2){
@@ -118,13 +121,19 @@ void loop(){
       readRFID = dump_byte_array(mfrc522[i].uid.uidByte, mfrc522[i].uid.size);
       
       if(i+1 == 1){
+        //Serial.println("======Tag 1 read=====");
         readRFID1 = readRFID;
         rfid_tag_present = true;
+        reader1Counter = 0;
+        //rfid_tag_present_prev = readRFID1;
         currentReadingReader1 = i+1; //not 0 as 0 is our default dummy parameter
       }
       if(i+1 == 2){
+        //Serial.println("======Tag 2 read=====");
         readRFID2 = readRFID;
         rfid_tag_present2 = true;
+        reader2Counter = 0;
+        //rfid_tag_present_prev2 = readRFID2;
         currentReadingReader2 = i+1; //not 0 as 0 is our default dummy parameter
       }
     } else {
@@ -148,25 +157,50 @@ void loop(){
     }
   }
 
+  
+    
   // rising edge
-  if ((rfid_tag_present && !rfid_tag_present_prev) || (rfid_tag_present2 && !rfid_tag_present_prev2)){
-    Serial.println(F("Card UID: "));
+  if ((rfid_tag_present && readRFID1 != rfid_tag_present_prev) || (rfid_tag_present2 && readRFID2 != rfid_tag_present_prev2)){
+    Serial.println(F("=======1========"));
+    Serial.println(rfid_tag_present);
+    Serial.println(rfid_tag_present_prev);
+    Serial.println(F("=======1=End======="));
+    Serial.println(F("=======2========"));
+    Serial.println(rfid_tag_present2);
+    Serial.println(rfid_tag_present_prev2);
+    Serial.println(F("========2=END========="));  
+    if(rfid_tag_present) {
+      rfid_tag_present_prev = readRFID1;
+    }
+    if(rfid_tag_present2) {
+      rfid_tag_present_prev2 = readRFID2;
+    }
     sendDataToNrf(readRFID1, readRFID2);
   }
 
   // If tag is picked up from RFID reader
-  if ((!rfid_tag_present && rfid_tag_present_prev)) { //tag1 gone
+  if ((!rfid_tag_present && rfid_tag_present_prev != "")) { //tag1 gone
+    reader1Counter++;
     Serial.println("Tag1 gone");
-    readRFID1 = "stop";
-    ledOnOff("Block", currentReadingReader1);
-    sendDataToNrf(readRFID1, readRFID2);
+    if(reader1Counter == 2) {
+      readRFID1 = "stop";
+      ledOnOff("Block", currentReadingReader1);
+      rfid_tag_present_prev = "";
+      sendDataToNrf(readRFID1, readRFID2);
+      reader1Counter = 0;
+    }
   }
 
-  if ((!rfid_tag_present2 && rfid_tag_present_prev2)) { //tag1 gone
+  if ((!rfid_tag_present2 && rfid_tag_present_prev2 != "")) { //tag2 gone
+    reader2Counter++;
     Serial.println("Tag2 gone");
-    readRFID2 = "stop";
-    ledOnOff("Block", currentReadingReader2);
-    sendDataToNrf(readRFID1, readRFID2);
+    if(reader2Counter == 2) {
+      readRFID2 = "stop";
+      ledOnOff("Block", currentReadingReader2);
+      rfid_tag_present_prev2 = "";
+      sendDataToNrf(readRFID1, readRFID2);
+      reader2Counter = 0;
+    }  
   }
   delay(100);
 }
